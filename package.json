@@ -1,0 +1,13 @@
+{
+  "name": "fivem-script-shop-bot",
+  "version": "1.0.0",
+  "description": "Discord verification and security logging bot for FiveM custom script shop server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.18.0",
+    "dotenv": "^16.4.5"
+  }
+}

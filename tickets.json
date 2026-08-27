@@ -1,0 +1,18 @@
+[
+  {
+    "channelId": "1542419965968384020",
+    "userId": "740101209653903391",
+    "category": "Sales Inquiry",
+    "createdAt": 1787811971697,
+    "lastActivity": 1787811971697,
+    "claimedBy": null
+  },
+  {
+    "channelId": "1542422322709790761",
+    "userId": "740101209653903391",
+    "category": "Sales Ticket",
+    "createdAt": 1787812533532,
+    "lastActivity": 1787812533532,
+    "claimedBy": null
+  }
+]
