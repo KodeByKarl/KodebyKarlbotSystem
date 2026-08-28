@@ -86,12 +86,19 @@ async function checkGitUpdates(guild, manualTrigger = false) {
 
     if (hasRemoteUpdate && autoPullEnabled) {
       try {
-        await execPromise('git pull');
+        await execPromise('git stash').catch(() => {});
+        await execPromise('git pull origin main');
         pullStatusText = '✅ Code successfully updated via git pull';
         console.log(`[GIT AUTO UPDATE] Auto-pulled commit ${shortHash}`);
       } catch (pullErr) {
-        pullStatusText = `⚠️ git pull attempted but failed: ${pullErr.message}`;
-        console.error('[GIT AUTO UPDATE ERROR]', pullErr.message);
+        try {
+          await execPromise('git fetch origin && git reset --hard origin/main');
+          pullStatusText = '✅ Code successfully updated via git reset';
+          console.log(`[GIT AUTO UPDATE] Auto-updated via git reset to commit ${shortHash}`);
+        } catch (resetErr) {
+          pullStatusText = `⚠️ git pull attempted but failed: ${pullErr.message}`;
+          console.error('[GIT AUTO UPDATE ERROR]', pullErr.message);
+        }
       }
     }
 

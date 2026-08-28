@@ -119,13 +119,20 @@ async function handleMessageCommands(message, client) {
     }
     const statusMsg = await message.reply('🔄 Executing `git pull` from remote repository...');
     try {
-      const { stdout, stderr } = await execPromise('git pull');
+      await execPromise('git stash').catch(() => {});
+      const { stdout, stderr } = await execPromise('git pull origin main');
       const gitOutput = stdout || stderr || 'Already up to date.';
       await checkGitUpdates(message.guild, true);
       return statusMsg.edit(`✅ **Git Pull Completed:**\n\`\`\`\n${gitOutput.slice(0, 1500)}\n\`\`\``);
     } catch (err) {
-      console.error('[GIT PULL COMMAND ERROR]', err);
-      return statusMsg.edit(`❌ **Git Pull Failed:**\n\`\`\`\n${err.message.slice(0, 1500)}\n\`\`\``);
+      try {
+        const { stdout } = await execPromise('git fetch origin && git reset --hard origin/main');
+        await checkGitUpdates(message.guild, true);
+        return statusMsg.edit(`✅ **Git Pull Completed (via Sync Reset):**\n\`\`\`\n${stdout.slice(0, 1500)}\n\`\`\``);
+      } catch (resetErr) {
+        console.error('[GIT PULL COMMAND ERROR]', err);
+        return statusMsg.edit(`❌ **Git Pull Failed:**\n\`\`\`\n${err.message.slice(0, 1500)}\n\`\`\``);
+      }
     }
   }
 
