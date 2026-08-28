@@ -1,0 +1,42 @@
+require('dotenv').config();
+
+module.exports = {
+  DISCORD_TOKEN: process.env.DISCORD_TOKEN,
+  VERIFIED_ROLE_ID: process.env.VERIFIED_ROLE_ID || '1535228405665239121',
+  LOG_CHANNEL_ID: process.env.LOG_CHANNEL_ID,
+  WEBSITE_URL: process.env.WEBSITE_URL || 'https://kodebykarl.net',
+  LANDING_CHANNEL_ID: process.env.LANDING_CHANNEL_ID || '1534470634342449202',
+  TICKET_PANEL_CHANNEL_ID: process.env.TICKET_PANEL_CHANNEL_ID || '1534470824889815160',
+  TICKET_CATEGORY_ID: process.env.TICKET_CATEGORY_ID || null,
+  STAFF_ROLE_ID: process.env.STAFF_ROLE_ID || null,
+
+  // Ticket Categories
+  CATEGORY_SALES_ID: process.env.CATEGORY_SALES_ID || '1542420500381171712',
+  CATEGORY_SERVICE_ID: process.env.CATEGORY_SERVICE_ID || '1542420536255053866',
+  CATEGORY_TECHNICAL_ID: process.env.CATEGORY_TECHNICAL_ID || '1542420568882544750',
+  CATEGORY_PARTNERSHIP_ID: process.env.CATEGORY_PARTNERSHIP_ID || '1542420599152967740',
+
+  // Embed & Links
+  EMBED_IMAGE_URL: process.env.EMBED_IMAGE_URL || 'https://r2.fivemanage.com/7qoUgFxV85h3Czm85xGbV/KodebyKArl.png',
+  SERVER_INFO_CHANNEL_ID: process.env.SERVER_INFO_CHANNEL_ID || '1534470692232233060',
+  DISCORD_INVITE_URL: process.env.DISCORD_INVITE_URL || 'https://discord.gg/gCXescESs',
+  DOCS_URL: process.env.DOCS_URL || 'https://kodebykarl-net.gitbook.io/kodebykarl.net',
+  GITHUB_URL: process.env.GITHUB_URL || 'https://github.com/kodebykarl',
+
+  // Special Feature Channels
+  DEV_GITHUB_CHANNEL_ID: process.env.DEV_GITHUB_CHANNEL_ID || '1534470712918806639',
+  PARTNERSHIP_CHANNEL_ID: process.env.PARTNERSHIP_CHANNEL_ID || '1534470762524577823',
+  REVIEWS_CHANNEL_ID: process.env.REVIEWS_CHANNEL_ID || '1542471412030251068',
+  STICKY_CHANNEL_ID: process.env.STICKY_CHANNEL_ID || '1542475718682869872',
+
+  // Partner & Server Status
+  PARTNER_1_GUILD_ID: process.env.PARTNER_1_GUILD_ID || '1526937565926654065',
+  PARTNER_1_INVITE: process.env.PARTNER_1_INVITE || 'https://discord.gg/G7nJ4mad',
+  PARTNER_1_DASHBOARD: process.env.PARTNER_1_DASHBOARD || 'http://151.242.136.30:40120',
+  FIVE_M_SERVER_IP: process.env.FIVE_M_SERVER_IP || '151.242.136.30',
+  FIVE_M_SERVER_PORT: process.env.FIVE_M_SERVER_PORT || '30120',
+
+  // Git Auto-Tracking
+  AUTO_PULL_UPDATES: process.env.AUTO_PULL_UPDATES === 'true',
+  GIT_CHECK_INTERVAL_MINUTES: parseInt(process.env.GIT_CHECK_INTERVAL_MINUTES, 10) || 3
+};
