@@ -22,6 +22,8 @@ const { deployDevGithub } = require('./panels/devGithubPanel');
 const { deployPartnership } = require('./panels/partnershipPanel');
 const { deployReviewPanel, syncReviewsToChannel } = require('./panels/reviewPanel');
 const { deployStickyNote } = require('./panels/stickyPanel');
+const { deployWelcomeBannerPanel } = require('./panels/welcomeBannerPanel');
+const { deployDeathScreenPanel } = require('./panels/deathScreenPanel');
 
 // Validate DISCORD_TOKEN
 if (!config.DISCORD_TOKEN) {
@@ -57,6 +59,8 @@ client.once('clientReady', async () => {
   console.log(`Partnership Channel ID:  ${config.PARTNERSHIP_CHANNEL_ID}`);
   console.log(`Reviews Channel ID:      ${config.REVIEWS_CHANNEL_ID}`);
   console.log(`Sticky Note Channel ID:  ${config.STICKY_CHANNEL_ID}`);
+  console.log(`Welcome Banner ID:       ${config.WELCOME_BANNER_CHANNEL_ID}`);
+  console.log(`DeathScreen ID:          ${config.DEATHSCREEN_CHANNEL_ID}`);
   console.log(`Ticket Panel Channel ID: ${config.TICKET_PANEL_CHANNEL_ID}`);
   console.log(`Website URL:             ${config.WEBSITE_URL}`);
   console.log('=================================================');
@@ -71,6 +75,8 @@ client.once('clientReady', async () => {
     await deployReviewPanel(guild, client);
     await syncReviewsToChannel(guild, client);
     await deployStickyNote(guild, client);
+    await deployWelcomeBannerPanel(guild, client);
+    await deployDeathScreenPanel(guild, client);
   }
 
   updateBotPresence(client);
