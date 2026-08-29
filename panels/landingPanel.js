@@ -1,40 +1,6 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const config = require('../config');
 
-/**
- * Helper to send a welcome landing page message when a member is approved.
- * @param {import('discord.js').Guild} guild 
- * @param {import('discord.js').GuildMember} member 
- */
-async function sendWelcomeLandingMessage(guild, member) {
-  try {
-    const channelId = process.env.LANDING_CHANNEL_ID || config.LANDING_CHANNEL_ID;
-    if (!channelId || !guild) return;
-
-    const channel = await guild.channels.fetch(channelId).catch(() => null);
-    if (!channel || !channel.isTextBased()) {
-      console.error(`[LANDING ERROR] Landing channel (ID: ${channelId}) was not found or is not a text channel.`);
-      return;
-    }
-
-    const landingEmbed = new EmbedBuilder()
-      .setTitle('Welcome to FiveM Custom Script Shop')
-      .setColor(0x2ECC71)
-      .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 256 }))
-      .setImage(config.EMBED_IMAGE_URL)
-      .setDescription(
-        `Welcome ${member.user} to the community. Your verification is complete.\n\n` +
-        `Browse Our Script Catalog: [${config.WEBSITE_URL}](${config.WEBSITE_URL})\n` +
-        `Purchases & Support: To purchase a script, request a quote, or open a bug ticket, please open a ticket in our ticket section.`
-      )
-      .setFooter({ text: 'FiveM Custom Script Shop' })
-      .setTimestamp();
-
-    await channel.send({ content: `Welcome ${member.user}`, embeds: [landingEmbed] });
-  } catch (err) {
-    console.error(`[LANDING ERROR] Failed to send landing welcome message for ${member.user.tag}:`, err);
-  }
-}
 
 /**
  * Helper to deploy or update the main Landing Page Announcement in LANDING_CHANNEL_ID.
@@ -97,4 +63,4 @@ async function deployLandingPage(guild, client) {
   }
 }
 
-module.exports = { sendWelcomeLandingMessage, deployLandingPage };
+module.exports = { deployLandingPage };

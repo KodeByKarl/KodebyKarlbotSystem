@@ -2,7 +2,6 @@ const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('
 const config = require('../config');
 const { logToChannel } = require('../utils/logger');
 const { getFormattedBadges } = require('../utils/badges');
-const { sendWelcomeLandingMessage } = require('../panels/landingPanel');
 
 // Memory store for tracking active DM verification sessions per user (userId -> { collector, timeoutTimer })
 const activeVerifications = new Map();
@@ -226,7 +225,6 @@ async function handleGuildMemberAdd(member) {
           .setTimestamp();
 
         await interaction.update({ embeds: [acceptedDmEmbed], components: [] });
-        await sendWelcomeLandingMessage(member.guild, member);
 
         const acceptLogEmbed = new EmbedBuilder()
           .setTitle('Member Verified')
