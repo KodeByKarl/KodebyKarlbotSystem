@@ -144,30 +144,20 @@ async function handleGuildMemberAdd(member) {
       console.error(`[DM FAILED] Could not send DM to ${member.user.tag} (${member.id}):`, dmError2.message);
 
       try {
-        const currentMember = await member.guild.members.fetch(member.id).catch(() => null);
-        if (currentMember) {
-          await currentMember.kick('Could not verify - DMs are disabled or blocked.');
-        }
-
         const dmFailedLogEmbed = new EmbedBuilder()
-          .setTitle('Member Kicked - DM Failed')
+          .setTitle('Member DM Failed - Verification Not Sent')
           .setColor(0xE74C3C)
           .setDescription(
             `User Tag: ${member.user.tag}\n` +
             `User Mention: ${member.user}\n` +
             `User ID: ${member.id}\n` +
-            `Action: Kicked\n` +
-            `Reason: Could not verify - DMs are disabled or blocked.`
+            `Status: DMs disabled or blocked. Verification DM could not be sent (No role assigned).`
           )
           .setTimestamp();
 
         await logToChannel(member.guild, { embeds: [dmFailedLogEmbed] });
-      } catch (kickError) {
-        console.error(`[KICK ERROR] Failed to kick ${member.user.tag} when DM failed:`, kickError);
-        await logToChannel(
-          member.guild,
-          `[ERROR] Could not kick member ${member.user.tag} (ID: ${member.id}) after DM send failure: ${kickError.message}`
-        );
+      } catch (logErr) {
+        console.error(`[LOG ERROR] Failed to send DM failed log for ${member.user.tag}:`, logErr);
       }
       return;
     }
@@ -188,16 +178,11 @@ async function handleGuildMemberAdd(member) {
         .setTitle('Verification Expired')
         .setColor(0xE74C3C)
         .setDescription(
-          `Your verification request timed out because no response was received within 10 minutes. You have been removed from the server.`
+          `Your verification request timed out because no response was received within 10 minutes. You have not been verified.`
         )
         .setTimestamp();
 
       await dmMessage.edit({ embeds: [expiredDmEmbed], components: [] }).catch(() => {});
-
-      const currentMember = await member.guild.members.fetch(member.id).catch(() => null);
-      if (currentMember) {
-        await currentMember.kick('Verification timed out (10 minutes).');
-      }
 
       const timeoutLogEmbed = new EmbedBuilder()
         .setTitle('Verification Timeout')
@@ -206,18 +191,13 @@ async function handleGuildMemberAdd(member) {
           `User Tag: ${member.user.tag}\n` +
           `User Mention: ${member.user}\n` +
           `User ID: ${member.id}\n` +
-          `Action: Kicked\n` +
-          `Reason: Verification timed out (no response within 10 minutes).`
+          `Status: Verification timed out (no response within 10 minutes). User was not given verified role.`
         )
         .setTimestamp();
 
       await logToChannel(member.guild, { embeds: [timeoutLogEmbed] });
-    } catch (timeoutKickError) {
-      console.error(`[TIMEOUT KICK ERROR] Failed to kick ${member.user.tag}:`, timeoutKickError);
-      await logToChannel(
-        member.guild,
-        `[ERROR] Verification timed out for ${member.user.tag} (ID: ${member.id}), but kick failed: ${timeoutKickError.message}`
-      );
+    } catch (timeoutLogErr) {
+      console.error(`[TIMEOUT LOG ERROR] Failed to log verification timeout for ${member.user.tag}:`, timeoutLogErr);
     }
   }, 600000);
 
@@ -285,16 +265,11 @@ async function handleGuildMemberAdd(member) {
           .setTitle('Verification Declined')
           .setColor(0xE74C3C)
           .setDescription(
-            `You have declined the server terms and agreement. You have been removed from the server.`
+            `You have declined the server terms and agreement. You will not be given the verified role.`
           )
           .setTimestamp();
 
         await interaction.update({ embeds: [declinedDmEmbed], components: [] });
-
-        const currentMember = await member.guild.members.fetch(member.id).catch(() => null);
-        if (currentMember) {
-          await currentMember.kick('Declined server verification/terms.');
-        }
 
         const declineLogEmbed = new EmbedBuilder()
           .setTitle('Member Declined Verification')
@@ -303,18 +278,13 @@ async function handleGuildMemberAdd(member) {
             `User Tag: ${member.user.tag}\n` +
             `User Mention: ${member.user}\n` +
             `User ID: ${member.id}\n` +
-            `Action: Kicked\n` +
-            `Reason: Declined server verification/terms.`
+            `Status: Declined server verification/terms. User was not given verified role.`
           )
           .setTimestamp();
 
         await logToChannel(member.guild, { embeds: [declineLogEmbed] });
-      } catch (kickError) {
-        console.error(`[DECLINE KICK ERROR] Failed to kick ${member.user.tag}:`, kickError);
-        await logToChannel(
-          member.guild,
-          `[ERROR] ${member.user.tag} (ID: ${member.id}) declined verification, but kick failed: ${kickError.message}`
-        );
+      } catch (declineLogErr) {
+        console.error(`[DECLINE LOG ERROR] Failed to log declined verification for ${member.user.tag}:`, declineLogErr);
       }
     }
   });
