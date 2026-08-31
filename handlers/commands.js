@@ -189,29 +189,8 @@ async function handleMessageCommands(message, client) {
   }
 
   // Public Command: !serverstatus / !partnerstatus / !status
-  if (['!serverstatus', '!partnerstatus', '!status'].includes(contentLower)) {
-    const statusData = await fetchFiveMServerStatus(config.FIVE_M_SERVER_IP, config.FIVE_M_SERVER_PORT);
-    const statusBadge = statusData.online
-      ? `🟢 **ONLINE** (${statusData.ping}ms)`
-      : `🔴 **OFFLINE**`;
-    const playerPercentage = Math.round((statusData.onlinePlayers / (statusData.maxPlayers || 1)) * 100);
-
-    const statusEmbed = new EmbedBuilder()
-      .setTitle(`Live Server Monitor: ${statusData.serverName}`)
-      .setColor(statusData.online ? 0x2ECC71 : 0xE74C3C)
-      .setThumbnail('https://www.pandoracity.online/assets/PandoraCity-FgWJxJAO.png')
-      .setImage(config.EMBED_IMAGE_URL)
-      .addFields(
-        { name: 'Server Name (Profile)', value: `${statusData.serverName}`, inline: true },
-        { name: 'Game Type / Framework', value: `${statusData.gameType}`, inline: true },
-        { name: 'Status', value: `${statusBadge}`, inline: true },
-        { name: 'Online Players', value: `\`${statusData.onlinePlayers} / ${statusData.maxPlayers}\` (${playerPercentage}%)`, inline: true },
-        { name: 'Partner Discord', value: `[Join Discord](${config.PARTNER_1_INVITE})`, inline: true }
-      )
-      .setFooter({ text: 'KODEBYKARL.NET - Live Server Status Check' })
-      .setTimestamp();
-
-    return message.reply({ embeds: [statusEmbed] });
+  if (['!serverstatus', '!partnerstatus', '!status', '/status', '/serverstatus'].includes(contentLower)) {
+    return handleServerStatusCommand(message);
   }
 
   // Admin Command: !deployreviews
@@ -251,4 +230,38 @@ async function handleMessageCommands(message, client) {
   }
 }
 
-module.exports = { handleMessageCommands };
+/**
+ * Handle Server Status Command (Slash & Message)
+ * @param {import('discord.js').ChatInputCommandInteraction | import('discord.js').Message} context 
+ */
+async function handleServerStatusCommand(context) {
+  const statusData = await fetchFiveMServerStatus(config.FIVE_M_SERVER_IP, config.FIVE_M_SERVER_PORT);
+  const statusBadge = statusData.online
+    ? `🟢 **ONLINE** (${statusData.ping}ms)`
+    : `🔴 **OFFLINE**`;
+  const playerPercentage = Math.round((statusData.onlinePlayers / (statusData.maxPlayers || 1)) * 100);
+
+  const statusEmbed = new EmbedBuilder()
+    .setTitle(`Live Server Monitor: ${statusData.serverName}`)
+    .setColor(statusData.online ? 0x2ECC71 : 0xE74C3C)
+    .setThumbnail('https://www.pandoracity.online/assets/PandoraCity-FgWJxJAO.png')
+    .setImage(config.EMBED_IMAGE_URL)
+    .addFields(
+      { name: 'Server Name (Profile)', value: `${statusData.serverName}`, inline: true },
+      { name: 'Game Type / Framework', value: `${statusData.gameType}`, inline: true },
+      { name: 'Status', value: `${statusBadge}`, inline: true },
+      { name: 'Online Players', value: `\`${statusData.onlinePlayers} / ${statusData.maxPlayers}\` (${playerPercentage}%)`, inline: true },
+      { name: 'Partner Discord', value: `[Join Discord](${config.PARTNER_1_INVITE})`, inline: true }
+    )
+    .setFooter({ text: 'KODEBYKARL.NET - Live Server Status Check' })
+    .setTimestamp();
+
+  if (typeof context.isChatInputCommand === 'function' && context.isChatInputCommand()) {
+    return context.reply({ embeds: [statusEmbed] });
+  } else if (typeof context.reply === 'function') {
+    return context.reply({ embeds: [statusEmbed] });
+  }
+}
+
+module.exports = { handleMessageCommands, handleServerStatusCommand };
+

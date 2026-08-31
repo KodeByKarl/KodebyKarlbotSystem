@@ -10,7 +10,7 @@ const config = require('./config');
 const { handleGuildMemberAdd, handleGuildMemberRemove } = require('./handlers/verification');
 const { handleTicketInteractions } = require('./handlers/tickets');
 const { handleReviewInteractions, updateBotPresence } = require('./handlers/reviews');
-const { handleMessageCommands } = require('./handlers/commands');
+const { handleMessageCommands, handleServerStatusCommand } = require('./handlers/commands');
 const { handlePaymentCommand } = require('./handlers/payment');
 const { checkInactiveTickets } = require('./handlers/autoClose');
 const { checkGitUpdates } = require('./services/gitTracker');
@@ -82,16 +82,30 @@ client.once('clientReady', async () => {
 
   updateBotPresence(client);
 
-  // Register Slash Commands
+  // Register Slash Commands (Global + Instant Guild registration)
+  const slashCommands = [
+    {
+      name: 'payment',
+      description: 'Display official developer payment details (GoTyme Bank & GCash)'
+    },
+    {
+      name: 'status',
+      description: 'Check live FiveM server status and metrics'
+    },
+    {
+      name: 'serverstatus',
+      description: 'Check live FiveM server status and metrics'
+    }
+  ];
+
   if (client.application) {
-    await client.application.commands.set([
-      {
-        name: 'payment',
-        description: 'Display official developer payment details (GoTyme Bank & GCash)'
-      }
-    ]).catch((err) => console.error('[SLASH COMMAND REGISTRATION ERROR]', err.message));
-    console.log('[SLASH COMMANDS] /payment command registered successfully.');
+    await client.application.commands.set(slashCommands).catch((err) => console.error('[SLASH GLOBAL REGISTRATION ERROR]', err.message));
   }
+
+  for (const [, g] of client.guilds.cache) {
+    await g.commands.set(slashCommands).catch((err) => console.error(`[SLASH GUILD REGISTRATION ERROR - ${g.name}]`, err.message));
+  }
+  console.log('[SLASH COMMANDS] Instant Guild & Global Slash commands (/payment, /status) registered successfully.');
 
   // 24-hour inactivity check interval (every 5 mins)
   setInterval(() => checkInactiveTickets(client), 5 * 60 * 1000);
@@ -127,6 +141,9 @@ client.on('interactionCreate', async (interaction) => {
   if (interaction.isChatInputCommand()) {
     if (interaction.commandName === 'payment') {
       return handlePaymentCommand(interaction);
+    }
+    if (['status', 'serverstatus'].includes(interaction.commandName)) {
+      return handleServerStatusCommand(interaction);
     }
   }
 
