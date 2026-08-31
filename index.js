@@ -11,6 +11,7 @@ const { handleGuildMemberAdd, handleGuildMemberRemove } = require('./handlers/ve
 const { handleTicketInteractions } = require('./handlers/tickets');
 const { handleReviewInteractions, updateBotPresence } = require('./handlers/reviews');
 const { handleMessageCommands } = require('./handlers/commands');
+const { handlePaymentCommand } = require('./handlers/payment');
 const { checkInactiveTickets } = require('./handlers/autoClose');
 const { checkGitUpdates } = require('./services/gitTracker');
 
@@ -81,6 +82,17 @@ client.once('clientReady', async () => {
 
   updateBotPresence(client);
 
+  // Register Slash Commands
+  if (client.application) {
+    await client.application.commands.set([
+      {
+        name: 'payment',
+        description: 'Display official developer payment details (GoTyme Bank & GCash)'
+      }
+    ]).catch((err) => console.error('[SLASH COMMAND REGISTRATION ERROR]', err.message));
+    console.log('[SLASH COMMANDS] /payment command registered successfully.');
+  }
+
   // 24-hour inactivity check interval (every 5 mins)
   setInterval(() => checkInactiveTickets(client), 5 * 60 * 1000);
 
@@ -112,6 +124,12 @@ client.on('guildMemberRemove', (member) => handleGuildMemberRemove(member));
 
 // Interaction Event Listener
 client.on('interactionCreate', async (interaction) => {
+  if (interaction.isChatInputCommand()) {
+    if (interaction.commandName === 'payment') {
+      return handlePaymentCommand(interaction);
+    }
+  }
+
   if (
     interaction.isModalSubmit() ||
     (interaction.isButton() && (interaction.customId === 'btn_leave_review_modal' || interaction.customId === 'btn_leave_review_anon'))

@@ -11,6 +11,7 @@ const { deployDevGithub } = require('../panels/devGithubPanel');
 const { deployPartnership } = require('../panels/partnershipPanel');
 const { deployReviewPanel, syncReviewsToChannel } = require('../panels/reviewPanel');
 const { deployStickyNote } = require('../panels/stickyPanel');
+const { handlePaymentCommand } = require('./payment');
 
 /**
  * Handle Message Commands & Activity Tracking
@@ -27,6 +28,11 @@ async function handleMessageCommands(message, client) {
   if (message.author.bot || !message.guild) return;
 
   const contentLower = message.content.toLowerCase().trim();
+
+  // Public / Developer Payment Command: !payment or /payment or !pay
+  if (['!payment', '/payment', '!pay', '!paymentinfo'].includes(contentLower)) {
+    return handlePaymentCommand(message);
+  }
 
   // Admin Command: !deploytickets
   if (contentLower === '!deploytickets') {
