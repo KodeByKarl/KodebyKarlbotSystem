@@ -4,7 +4,7 @@ module.exports = {
   DISCORD_TOKEN: process.env.DISCORD_TOKEN,
   VERIFIED_ROLE_ID: process.env.VERIFIED_ROLE_ID || '1535228405665239121',
   LOG_CHANNEL_ID: process.env.LOG_CHANNEL_ID,
-  WEBSITE_URL: process.env.WEBSITE_URL || 'https://kodebykarl.net',
+  WEBSITE_URL: process.env.WEBSITE_URL || 'https://kodebykarl.vercel.app/',
   LANDING_CHANNEL_ID: process.env.LANDING_CHANNEL_ID || '1534470634342449202',
   TICKET_PANEL_CHANNEL_ID: process.env.TICKET_PANEL_CHANNEL_ID || '1534470824889815160',
   TICKET_CATEGORY_ID: process.env.TICKET_CATEGORY_ID || null,

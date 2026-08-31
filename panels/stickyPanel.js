@@ -28,7 +28,7 @@ async function deployStickyNote(guild, client, forceResend = false) {
       .setDescription(
         `Welcome to **KodebyKarl.net** — your destination for high-quality, framework-ready FiveM custom scripts!\n\n` +
         `**Store Information & Quick Navigation:**\n` +
-        `• **Official Website Catalog**: Browse custom scripts at [kodebykarl.net](${config.WEBSITE_URL})\n` +
+        `• **Official Website Catalog**: Browse custom scripts at [kodebykarl.vercel.app](${config.WEBSITE_URL})\n` +
         `• **Documentation**: Read setup guides & config docs at [GitBook Docs](${config.DOCS_URL})\n` +
         `• **Script Commit Updates**: Track code changelogs in <#${config.DEV_GITHUB_CHANNEL_ID}>\n` +
         `• **Customer Reviews & Ratings**: Read verified feedback in <#${config.REVIEWS_CHANNEL_ID}>\n\n` +
