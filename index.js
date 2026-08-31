@@ -82,30 +82,26 @@ client.once('clientReady', async () => {
 
   updateBotPresence(client);
 
-  // Register Slash Commands (Global + Instant Guild registration)
+  // Register Slash Commands (Global only - clear guild overrides to avoid duplicate entries)
   const slashCommands = [
     {
       name: 'payment',
-      description: 'Display official developer payment details (GoTyme Bank & GCash)'
+      description: 'Display payment details'
     },
     {
       name: 'status',
-      description: 'Check live FiveM server status and metrics'
-    },
-    {
-      name: 'serverstatus',
-      description: 'Check live FiveM server status and metrics'
+      description: 'Check live FiveM server status'
     }
   ];
 
   if (client.application) {
-    await client.application.commands.set(slashCommands).catch((err) => console.error('[SLASH GLOBAL REGISTRATION ERROR]', err.message));
+    await client.application.commands.set(slashCommands).catch((err) => console.error('[SLASH REGISTRATION ERROR]', err.message));
   }
 
   for (const [, g] of client.guilds.cache) {
-    await g.commands.set(slashCommands).catch((err) => console.error(`[SLASH GUILD REGISTRATION ERROR - ${g.name}]`, err.message));
+    await g.commands.set([]).catch(() => {});
   }
-  console.log('[SLASH COMMANDS] Instant Guild & Global Slash commands (/payment, /status) registered successfully.');
+  console.log('[SLASH COMMANDS] Clean Slash commands (/payment, /status) registered successfully.');
 
   // 24-hour inactivity check interval (every 5 mins)
   setInterval(() => checkInactiveTickets(client), 5 * 60 * 1000);
